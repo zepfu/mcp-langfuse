@@ -1,0 +1,57 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.10
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - httpx>=0.28.1
+          - mcp[cli]>=1.18.0
+          - pydantic>=2.11.0
+          - pydantic-settings>=2.10.0
+          - PyYAML>=6.0.2
+          - pytest>=8.3.5
+          - respx>=0.22.0
+          - types-PyYAML>=6.0.12.20250915
+        args: ["--config-file=pyproject.toml"]
+        pass_filenames: false
+
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: v2.14
+    hooks:
+      - id: vulture
+        args: ["--config=pyproject.toml"]
+        pass_filenames: false
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.8
+    hooks:
+      - id: actionlint
+
+  - repo: local
+    hooks:
+      - id: tools-md-check
+        name: Check TOOLS.md is up to date
+        entry: /bin/bash -lc 'PYTHONPATH=src .venv/bin/python -m mcp_langfuse.tools_markdown --check'
+        language: system
+        pass_filenames: false
