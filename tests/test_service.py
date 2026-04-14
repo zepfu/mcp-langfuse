@@ -4,7 +4,13 @@ from typing import Any
 
 import pytest
 
-from mcp_langfuse.client import LangfuseAPIError, LangfuseArgumentError, LangfuseResponse
+from mcp_langfuse.client import (
+    LangfuseAPIError,
+    LangfuseArgumentError,
+    LangfuseResponse,
+    LangfuseResponseDecodeError,
+    LangfuseTransportError,
+)
 from mcp_langfuse.config import Settings
 from mcp_langfuse.openapi import load_api_spec
 from mcp_langfuse.service import LangfuseToolService
@@ -134,6 +140,68 @@ async def test_service_wraps_argument_errors() -> None:
     assert result.isError is True
     assert result.structuredContent is not None
     assert result.structuredContent["error"] == "invalid_arguments"
+
+
+@pytest.mark.asyncio
+async def test_service_wraps_transport_errors() -> None:
+    spec = load_api_spec()
+    selection = build_tool_selection(
+        spec,
+        make_settings(
+            LANGFUSE_TOOL_PROFILES="full",
+            LANGFUSE_ENABLE_ADMIN_TOOLS=True,
+        ),
+    )
+    operation = spec.by_tool_name["langfuse_projects_get"]
+    service = LangfuseToolService(
+        selection,
+        FakeClient(
+            LangfuseTransportError(
+                message="network down",
+                operation=operation,
+                details={"exception_type": "ConnectError"},
+            )
+        ),
+    )
+
+    result = await service.call_tool("langfuse_projects_get", {})
+
+    assert result.isError is True
+    assert result.structuredContent is not None
+    assert result.structuredContent["error"] == "langfuse_transport_error"
+    assert result.structuredContent["details"] == {"exception_type": "ConnectError"}
+
+
+@pytest.mark.asyncio
+async def test_service_wraps_response_decode_errors() -> None:
+    spec = load_api_spec()
+    selection = build_tool_selection(
+        spec,
+        make_settings(
+            LANGFUSE_TOOL_PROFILES="full",
+            LANGFUSE_ENABLE_ADMIN_TOOLS=True,
+        ),
+    )
+    operation = spec.by_tool_name["langfuse_projects_get"]
+    service = LangfuseToolService(
+        selection,
+        FakeClient(
+            LangfuseResponseDecodeError(
+                message="malformed json",
+                operation=operation,
+                status_code=200,
+                details={"body_preview": "not-json"},
+            )
+        ),
+    )
+
+    result = await service.call_tool("langfuse_projects_get", {})
+
+    assert result.isError is True
+    assert result.structuredContent is not None
+    assert result.structuredContent["error"] == "langfuse_response_decode_error"
+    assert result.structuredContent["status_code"] == 200
+    assert result.structuredContent["details"] == {"body_preview": "not-json"}
 
 
 @pytest.mark.asyncio

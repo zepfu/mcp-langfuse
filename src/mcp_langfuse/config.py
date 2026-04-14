@@ -5,10 +5,11 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Self
 
-from pydantic import Field, field_validator
+from pydantic import AnyHttpUrl, Field, TypeAdapter, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_TOOL_PROFILES = ("minimal",)
+HTTP_URL_ADAPTER = TypeAdapter(AnyHttpUrl)
 
 
 def _parse_csv_values(raw: object) -> tuple[str, ...]:
@@ -76,6 +77,12 @@ class Settings(BaseSettings):
     def _normalize_csv_fields(cls, raw: object) -> tuple[str, ...]:
         """Allow env vars and direct init values to use CSV strings or iterables."""
         return _parse_csv_values(raw)
+
+    @field_validator("base_url")
+    @classmethod
+    def _validate_base_url(cls, raw: str) -> str:
+        """Require an absolute HTTP(S) base URL."""
+        return str(HTTP_URL_ADAPTER.validate_python(raw))
 
     @classmethod
     def from_env(cls) -> Self:

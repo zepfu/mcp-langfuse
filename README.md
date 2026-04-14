@@ -8,38 +8,73 @@ Spec-driven MCP server for the Langfuse public API.
 - Registers one MCP tool per Langfuse public operation.
 - Uses Basic Auth with Langfuse public and secret keys.
 - Returns both MCP text content and structured JSON output for tool calls.
+- Exposes only the tools enabled by the current profile and flag configuration.
 
-## Configuration
+## Run
 
-Set these environment variables before running the server:
+This is a stdio MCP server. It does not open an HTTP port.
 
-- `LANGFUSE_BASE_URL`
-- `LANGFUSE_PUBLIC_KEY`
-- `LANGFUSE_SECRET_KEY`
-- `LANGFUSE_TIMEOUT_SECONDS`
-- `LANGFUSE_VERIFY_SSL`
-- `LANGFUSE_TOOL_PROFILES`
-- `LANGFUSE_TOOL_FAMILIES_ENABLE`
-- `LANGFUSE_TOOL_FAMILIES_DISABLE`
-- `LANGFUSE_TOOLS_ENABLE`
-- `LANGFUSE_TOOLS_DISABLE`
-- `LANGFUSE_ENABLE_WRITE_TOOLS`
-- `LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS`
-- `LANGFUSE_ENABLE_ADMIN_TOOLS`
-- `LANGFUSE_ENABLE_LEGACY_TOOLS`
+```bash
+python3.14 -m uv run mcp-langfuse
+```
 
-Defaults:
+## Server Configuration
 
-- `LANGFUSE_BASE_URL=https://cloud.langfuse.com`
-- `LANGFUSE_TIMEOUT_SECONDS=30`
-- `LANGFUSE_VERIFY_SSL=true`
-- `LANGFUSE_TOOL_PROFILES=minimal`
-- write, destructive, admin, and legacy tool gates default to `false`
+The server reads settings from:
+
+- process environment variables passed by the MCP client
+- a `.env` file in the current working directory
+
+If you want the server to auto-load `.env`, configure the client to start the process with `cwd`
+set to the repository root. If your client passes `env` directly, `cwd` is optional.
+
+### Required Settings
+
+- `LANGFUSE_PUBLIC_KEY`: Langfuse public API key used as the Basic Auth username
+- `LANGFUSE_SECRET_KEY`: Langfuse secret API key used as the Basic Auth password
+
+### Optional Settings
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `LANGFUSE_BASE_URL` | `https://cloud.langfuse.com` | Base URL for the Langfuse API |
+| `LANGFUSE_TIMEOUT_SECONDS` | `30` | Request timeout for outbound API calls |
+| `LANGFUSE_VERIFY_SSL` | `true` | Enable or disable TLS certificate verification |
+| `LANGFUSE_TOOL_PROFILES` | `minimal` | Comma-separated profile list used to seed the visible tool set |
+| `LANGFUSE_TOOL_FAMILIES_ENABLE` | unset | Additional Langfuse API families to expose |
+| `LANGFUSE_TOOL_FAMILIES_DISABLE` | unset | Langfuse API families to hide |
+| `LANGFUSE_TOOLS_ENABLE` | unset | Individual MCP tools to force-enable |
+| `LANGFUSE_TOOLS_DISABLE` | unset | Individual MCP tools to force-disable |
+| `LANGFUSE_ENABLE_WRITE_TOOLS` | `false` | Allow non-`GET` operations except where tighter gates still apply |
+| `LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS` | `false` | Allow `DELETE` operations |
+| `LANGFUSE_ENABLE_ADMIN_TOOLS` | `false` | Allow admin-family tools |
+| `LANGFUSE_ENABLE_LEGACY_TOOLS` | `false` | Allow legacy API families |
+
+### Tool Selection Model
+
+Tool loading happens before MCP `tools/list`, so clients only discover enabled tools.
+
+Selection precedence is:
+
+1. Start from `LANGFUSE_TOOL_PROFILES`
+2. Add `LANGFUSE_TOOL_FAMILIES_ENABLE`
+3. Remove `LANGFUSE_TOOL_FAMILIES_DISABLE`
+4. Apply the write, destructive, admin, and legacy safety gates
+5. Apply `LANGFUSE_TOOLS_ENABLE` and `LANGFUSE_TOOLS_DISABLE`
+
+Notes:
+
+- `LANGFUSE_TOOLS_ENABLE` can force a tool on even if its family is not selected or a safety gate would normally hide it.
+- `LANGFUSE_TOOLS_DISABLE` always hides that tool.
+- If a client attempts to call a hidden but known tool directly, the server returns a
+  `tool_not_enabled` error.
+
+### Profiles
 
 Common profiles:
 
-- `minimal`: small read-only observability set
-- `observe_read`: broader observability and metrics
+- `minimal`: small default read-only observability set
+- `observe_read`: broader read-only observability and metrics
 - `ingest`: ingestion, OTEL, and media
 - `evals`: annotation, scoring, comments, prompts
 - `datasets`: dataset and run management
@@ -50,15 +85,60 @@ Common profiles:
 - `legacy`: legacy endpoints
 - `full`: every current public API family
 
-Examples:
+The generated tool catalog in `TOOLS.md` documents the current families and the MCP tool names
+behind them.
+
+### `.env` Example
 
 ```bash
-LANGFUSE_TOOL_PROFILES=observe_read,prompts python3.14 -m uv run mcp-langfuse
+LANGFUSE_BASE_URL=https://cloud.langfuse.com
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_TOOL_PROFILES=observe_read,prompts
+LANGFUSE_ENABLE_WRITE_TOOLS=false
+LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS=false
+LANGFUSE_ENABLE_ADMIN_TOOLS=false
+LANGFUSE_ENABLE_LEGACY_TOOLS=false
+```
+
+### MCP Client Entry Example
+
+Any stdio MCP client needs to launch the same command and supply the environment. A typical entry
+looks like this:
+
+```json
+{
+  "command": "python3.14",
+  "args": ["-m", "uv", "run", "--project", "/path/to/mcp-langfuse", "mcp-langfuse"],
+  "cwd": "/path/to/mcp-langfuse",
+  "env": {
+    "LANGFUSE_PUBLIC_KEY": "pk-lf-...",
+    "LANGFUSE_SECRET_KEY": "sk-lf-...",
+    "LANGFUSE_TOOL_PROFILES": "observe_read,prompts",
+    "LANGFUSE_ENABLE_WRITE_TOOLS": "false",
+    "LANGFUSE_ENABLE_ADMIN_TOOLS": "false"
+  }
+}
+```
+
+### Launch Examples
+
+```bash
+LANGFUSE_TOOL_PROFILES=observe_read,prompts \
+python3.14 -m uv run mcp-langfuse
 ```
 
 ```bash
 LANGFUSE_TOOL_PROFILES= \
 LANGFUSE_TOOLS_ENABLE=langfuse_projects_delete \
+python3.14 -m uv run mcp-langfuse
+```
+
+```bash
+LANGFUSE_TOOL_PROFILES=admin \
+LANGFUSE_ENABLE_WRITE_TOOLS=true \
+LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS=true \
+LANGFUSE_ENABLE_ADMIN_TOOLS=true \
 python3.14 -m uv run mcp-langfuse
 ```
 
@@ -72,12 +152,6 @@ python3.14 -m uv run mypy
 python3.14 -m uv run vulture
 python3.14 -m uv run pre-commit install
 python3.14 -m uv run pre-commit run --all-files
-```
-
-## Run
-
-```bash
-python3.14 -m uv run mcp-langfuse
 ```
 
 ## Tool Reference

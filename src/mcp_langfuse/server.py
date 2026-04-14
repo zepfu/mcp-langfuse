@@ -8,13 +8,14 @@ import mcp.server.stdio
 from mcp import types
 from mcp.server.lowlevel import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
+from pydantic import ValidationError
 
 from . import __version__
 from .client import LangfuseClient
 from .config import Settings
 from .openapi import load_api_spec
 from .service import LangfuseToolService
-from .tool_selection import build_tool_selection
+from .tool_selection import ToolSelectionError, build_tool_selection
 
 
 def build_server(service: LangfuseToolService) -> Server:
@@ -61,4 +62,8 @@ async def run_stdio() -> None:
 
 def main() -> None:
     """Run the stdio server in a fresh asyncio event loop."""
-    asyncio.run(run_stdio())
+    try:
+        asyncio.run(run_stdio())
+    except (ToolSelectionError, ValidationError) as exc:
+        message = f"Configuration error: {exc}"
+        raise SystemExit(message) from None

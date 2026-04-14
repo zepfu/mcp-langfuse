@@ -7,7 +7,13 @@ from typing import TYPE_CHECKING, Any, Protocol
 
 from mcp import types
 
-from .client import LangfuseAPIError, LangfuseArgumentError, LangfuseResponse
+from .client import (
+    LangfuseAPIError,
+    LangfuseArgumentError,
+    LangfuseResponse,
+    LangfuseResponseDecodeError,
+    LangfuseTransportError,
+)
 
 if TYPE_CHECKING:
     from .openapi import OperationSpec
@@ -44,14 +50,13 @@ class LangfuseToolService:
             for operation in self._selection.enabled_operations
         ]
 
-    async def call_tool(
-        self,
-        name: str,
-        arguments: dict[str, Any] | None,
-    ) -> types.CallToolResult:
-        """Execute one Langfuse-backed MCP tool call."""
+    def _resolve_operation(self, name: str) -> OperationSpec | types.CallToolResult:
+        """Resolve a tool name into an enabled operation or an error result."""
         operation = self._selection.enabled_by_name.get(name)
-        if operation is None and name in self._selection.disabled_reasons:
+        if operation is not None:
+            return operation
+
+        if name in self._selection.disabled_reasons:
             reason = self._selection.disabled_reasons[name]
             return self._error_result(
                 {
@@ -62,16 +67,27 @@ class LangfuseToolService:
                 }
             )
 
-        if operation is None:
-            operation = self._selection.all_by_name.get(name)
-        if operation is None:
-            return self._error_result(
-                {
-                    "error": "unknown_tool",
-                    "message": f"Unknown tool: {name}",
-                    "tool_name": name,
-                }
-            )
+        operation = self._selection.all_by_name.get(name)
+        if operation is not None:
+            return operation
+
+        return self._error_result(
+            {
+                "error": "unknown_tool",
+                "message": f"Unknown tool: {name}",
+                "tool_name": name,
+            }
+        )
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None,
+    ) -> types.CallToolResult:
+        """Execute one Langfuse-backed MCP tool call."""
+        operation = self._resolve_operation(name)
+        if isinstance(operation, types.CallToolResult):
+            return operation
 
         try:
             response = await self._client.call_operation(operation, arguments)
@@ -82,6 +98,25 @@ class LangfuseToolService:
                     "message": str(exc),
                     "tool_name": name,
                     "arguments": arguments or {},
+                }
+            )
+        except LangfuseTransportError as exc:
+            return self._error_result(
+                {
+                    "error": "langfuse_transport_error",
+                    "message": str(exc),
+                    "tool_name": name,
+                    "details": exc.details,
+                }
+            )
+        except LangfuseResponseDecodeError as exc:
+            return self._error_result(
+                {
+                    "error": "langfuse_response_decode_error",
+                    "message": str(exc),
+                    "status_code": exc.status_code,
+                    "tool_name": name,
+                    "details": exc.details,
                 }
             )
         except LangfuseAPIError as exc:
