@@ -95,3 +95,4 @@ ignore_names = [
 coverage_target = 80
 default_branch = "develop"
 release_branch = "main"
+uv_extras = []
