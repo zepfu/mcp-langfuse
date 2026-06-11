@@ -48,9 +48,9 @@ class ToolSelection:
 
     enabled_operations: tuple[OperationSpec, ...]
     enabled_by_name: dict[str, OperationSpec]
-    all_by_name: dict[str, OperationSpec]
     disabled_reasons: dict[str, str]
     selected_families: frozenset[str]
+    gate_overrides: dict[str, str]
 
 
 class ToolSelectionError(ValueError):
@@ -185,9 +185,30 @@ def _resolve_profile_families(
             resolved.update(available_families)
             continue
 
-        resolved.update(family for family in profile.families if family in available_families)
+        resolved.update(profile.families)
 
     return resolved
+
+
+def _validate_known_families(available: set[str]) -> None:
+    """Validate that every hardcoded family constant exists in the spec.
+
+    Args:
+        available: The set of family (tag) names present in the loaded spec.
+
+    Raises:
+        ToolSelectionError: If any admin, legacy, or profile family is missing.
+
+    """
+    referenced: set[str] = set(ADMIN_FAMILIES) | set(LEGACY_FAMILIES)
+    for profile in TOOL_PROFILES:
+        referenced.update(profile.families)
+
+    missing = sorted(referenced - available)
+    if missing:
+        names = ", ".join(missing)
+        message = f"Configured tool families missing from the API spec: {names}"
+        raise ToolSelectionError(message)
 
 
 def _validate_no_overlap(
@@ -216,9 +237,10 @@ def _disabled_reason(
         return "admin tool families are disabled"
     if operation.tag in LEGACY_FAMILIES and not settings.enable_legacy_tools:
         return "legacy tool families are disabled"
-    if operation.method in DESTRUCTIVE_METHODS and not settings.enable_destructive_tools:
-        return "destructive tools are disabled"
-    if operation.method in WRITE_METHODS and not settings.enable_write_tools:
+    if operation.method in DESTRUCTIVE_METHODS:
+        if not settings.enable_destructive_tools:
+            return "destructive tools are disabled"
+    elif operation.method in WRITE_METHODS and not settings.enable_write_tools:
         return "write tools are disabled"
     return None
 
@@ -226,26 +248,27 @@ def _disabled_reason(
 def build_tool_selection(spec: LangfuseAPISpec, settings: Settings) -> ToolSelection:
     """Build the enabled MCP tool set for the provided settings."""
     available_families = {operation.tag for operation in spec.operations}
+    _validate_known_families(available_families)
     available_tool_names = set(spec.by_tool_name)
+
+    families_enable = _resolve_requested_families(settings.tool_families_enable, available_families)
+    families_disable = _resolve_requested_families(
+        settings.tool_families_disable,
+        available_families,
+    )
+    _validate_no_overlap(families_enable, families_disable, kind="family")
+
     selected_families = _resolve_profile_families(settings.tool_profiles, available_families)
-    selected_families.update(
-        _resolve_requested_families(settings.tool_families_enable, available_families)
-    )
-    selected_families.difference_update(
-        _resolve_requested_families(settings.tool_families_disable, available_families)
-    )
+    selected_families.update(families_enable)
+    selected_families.difference_update(families_disable)
 
     enabled_tools = _resolve_requested_tools(settings.tools_enable, available_tool_names)
     disabled_tools = _resolve_requested_tools(settings.tools_disable, available_tool_names)
-    _validate_no_overlap(
-        _resolve_requested_families(settings.tool_families_enable, available_families),
-        _resolve_requested_families(settings.tool_families_disable, available_families),
-        kind="family",
-    )
     _validate_no_overlap(enabled_tools, disabled_tools, kind="tool")
 
     enabled_operations: list[OperationSpec] = []
     disabled_reasons: dict[str, str] = {}
+    gate_overrides: dict[str, str] = {}
 
     for operation in spec.operations:
         if operation.tool_name in disabled_tools:
@@ -253,6 +276,9 @@ def build_tool_selection(spec: LangfuseAPISpec, settings: Settings) -> ToolSelec
             continue
 
         if operation.tool_name in enabled_tools:
+            reason = _disabled_reason(operation, settings, selected_families)
+            if reason is not None:
+                gate_overrides[operation.tool_name] = reason
             enabled_operations.append(operation)
             continue
 
@@ -266,9 +292,9 @@ def build_tool_selection(spec: LangfuseAPISpec, settings: Settings) -> ToolSelec
     return ToolSelection(
         enabled_operations=tuple(enabled_operations),
         enabled_by_name={operation.tool_name: operation for operation in enabled_operations},
-        all_by_name=spec.by_tool_name,
         disabled_reasons=disabled_reasons,
         selected_families=frozenset(selected_families),
+        gate_overrides=gate_overrides,
     )
 
 
@@ -283,7 +309,8 @@ def describe_profiles(spec: LangfuseAPISpec) -> tuple[DocumentedProfile, ...]:
         else:
             families = tuple(family for family in profile.families if family in all_families)
 
-        tool_count = sum(1 for operation in spec.operations if operation.tag in set(families))
+        family_set = set(families)
+        tool_count = sum(1 for operation in spec.operations if operation.tag in family_set)
         documented.append(
             DocumentedProfile(
                 name=profile.name,

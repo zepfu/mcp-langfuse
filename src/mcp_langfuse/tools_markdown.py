@@ -238,10 +238,10 @@ def render_tools_markdown() -> str:
     lines.append("")
 
     for tag in sorted(operations_by_tag):
-        lines.append(f"## {tag}")
+        lines.append(f"### {tag}")
         lines.append("")
         for operation in operations_by_tag[tag]:
-            lines.append(f"### `{operation.tool_name}`")
+            lines.append(f"#### `{operation.tool_name}`")
             lines.append("")
             intent = operation.description or "No description provided by Langfuse."
             lines.append(f"- Intent: {intent}")
@@ -274,22 +274,42 @@ def render_tools_markdown() -> str:
 def main() -> None:
     """CLI entry point for rendering `TOOLS.md`."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Fail if TOOLS.md is out of date.")
     parser.add_argument(
+        "--path",
+        type=Path,
+        default=TOOLS_MD_PATH,
+        help="Path to the TOOLS.md file to check or write.",
+    )
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
+        "--check",
+        action="store_true",
+        help="Fail if the target file is out of date.",
+    )
+    mode_group.add_argument(
         "--write",
         action="store_true",
-        help="Write TOOLS.md to the repository root.",
+        help="Write rendered content to the target path.",
     )
     arguments = parser.parse_args()
+    target: Path = arguments.path
 
     rendered = render_tools_markdown()
 
     if arguments.check:
-        current = TOOLS_MD_PATH.read_text(encoding="utf-8") if TOOLS_MD_PATH.exists() else ""
-        raise SystemExit(0 if current == rendered else 1)
+        if not target.exists():
+            sys.stderr.write(f"TOOLS.md not found at {target}\n")
+            raise SystemExit(2)
+        current = target.read_text(encoding="utf-8")
+        if current != rendered:
+            sys.stderr.write(
+                "TOOLS.md is out of date; run mcp-langfuse-generate-tools-md --write\n",
+            )
+            raise SystemExit(1)
+        return
 
     if arguments.write:
-        TOOLS_MD_PATH.write_text(rendered, encoding="utf-8")
+        target.write_text(rendered, encoding="utf-8")
         return
 
     sys.stdout.write(rendered)

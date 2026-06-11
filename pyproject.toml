@@ -60,7 +60,7 @@ warn_unused_configs = true
 module = "tests.*"
 disallow_untyped_defs = false
 disallow_untyped_calls = false
-disable_error_code = ["attr-defined", "var-annotated"]
+disable_error_code = ["attr-defined", "var-annotated", "arg-type"]
 
 [tool.ruff]
 line-length = 100
@@ -91,4 +91,5 @@ ignore_names = [
   "pytest_*",
   "test_*",
   "_pytest_*",
+  "cls",
 ]

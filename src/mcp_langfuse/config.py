@@ -2,27 +2,39 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
-from typing import Self
-
-from pydantic import AnyHttpUrl, Field, TypeAdapter, field_validator
+from pydantic import AnyHttpUrl, Field, SecretStr, TypeAdapter, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_TOOL_PROFILES = ("minimal",)
 HTTP_URL_ADAPTER = TypeAdapter(AnyHttpUrl)
 
+_CSV_SEQUENCE_TYPES = (list, tuple, set, frozenset)
+
 
 def _parse_csv_values(raw: object) -> tuple[str, ...]:
-    """Parse comma-separated or iterable config values into a normalized tuple."""
+    """Parse comma-separated or sequence config values into a normalized tuple.
+
+    Args:
+        raw: A CSV string, a sequence of strings, or ``None``.
+
+    Returns:
+        A deduplicated tuple of trimmed, non-empty string values.
+
+    Raises:
+        ValueError: If ``raw`` is bytes/bytearray or an unsupported type.
+
+    """
     if raw is None:
         return ()
 
     if isinstance(raw, str):
         items = raw.split(",")
-    elif isinstance(raw, Iterable):
+    elif isinstance(raw, _CSV_SEQUENCE_TYPES):
         items = [str(item) for item in raw]
     else:
-        items = [str(raw)]
+        # ValueError (not TypeError) so pydantic wraps it into a ValidationError.
+        message = "CSV value must be a string or a sequence of strings"
+        raise ValueError(message)  # noqa: TRY004
 
     normalized = [item.strip() for item in items if item.strip()]
     return tuple(dict.fromkeys(normalized))
@@ -40,9 +52,15 @@ class Settings(BaseSettings):
 
     base_url: str = Field(default="https://cloud.langfuse.com", alias="LANGFUSE_BASE_URL")
     public_key: str = Field(alias="LANGFUSE_PUBLIC_KEY")
-    secret_key: str = Field(alias="LANGFUSE_SECRET_KEY")
+    secret_key: SecretStr = Field(alias="LANGFUSE_SECRET_KEY")
     timeout_seconds: float = Field(default=30.0, alias="LANGFUSE_TIMEOUT_SECONDS", gt=0)
     verify_ssl: bool = Field(default=True, alias="LANGFUSE_VERIFY_SSL")
+    retry_attempts: int = Field(default=2, ge=0, le=10, alias="LANGFUSE_RETRY_ATTEMPTS")
+    max_response_bytes: int = Field(
+        default=200_000,
+        gt=0,
+        alias="LANGFUSE_MAX_RESPONSE_BYTES",
+    )
     tool_profiles: tuple[str, ...] = Field(
         default=DEFAULT_TOOL_PROFILES,
         alias="LANGFUSE_TOOL_PROFILES",
@@ -75,16 +93,16 @@ class Settings(BaseSettings):
     )
     @classmethod
     def _normalize_csv_fields(cls, raw: object) -> tuple[str, ...]:
-        """Allow env vars and direct init values to use CSV strings or iterables."""
+        """Allow env vars and direct init values to use CSV strings or sequences."""
         return _parse_csv_values(raw)
 
     @field_validator("base_url")
     @classmethod
     def _validate_base_url(cls, raw: str) -> str:
-        """Require an absolute HTTP(S) base URL."""
-        return str(HTTP_URL_ADAPTER.validate_python(raw))
+        """Require an absolute HTTP(S) base URL and strip any trailing slash."""
+        return str(HTTP_URL_ADAPTER.validate_python(raw)).rstrip("/")
 
-    @classmethod
-    def from_env(cls) -> Self:
-        """Load settings from the current environment."""
-        return cls()  # type: ignore[call-arg]
+
+KNOWN_ENV_VARS: frozenset[str] = frozenset(
+    field.alias for field in Settings.model_fields.values() if field.alias
+)

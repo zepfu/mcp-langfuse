@@ -229,9 +229,9 @@ Total tools: 87
 
 ## Tool Details
 
-## AnnotationQueues
+### AnnotationQueues
 
-### `langfuse_annotation_queues_create_queue`
+#### `langfuse_annotation_queues_create_queue`
 
 - Intent: Create an annotation queue
 - Langfuse operation: `annotationQueues_createQueue`
@@ -250,7 +250,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_create_queue_assignment`
+#### `langfuse_annotation_queues_create_queue_assignment`
 
 - Intent: Create an assignment for a user to an annotation queue
 - Langfuse operation: `annotationQueues_createQueueAssignment`
@@ -268,7 +268,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_create_queue_item`
+#### `langfuse_annotation_queues_create_queue_item`
 
 - Intent: Add an item to an annotation queue
 - Langfuse operation: `annotationQueues_createQueueItem`
@@ -287,7 +287,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_delete_queue_assignment`
+#### `langfuse_annotation_queues_delete_queue_assignment`
 
 - Intent: Delete an assignment for a user to an annotation queue
 - Langfuse operation: `annotationQueues_deleteQueueAssignment`
@@ -305,7 +305,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_delete_queue_item`
+#### `langfuse_annotation_queues_delete_queue_item`
 
 - Intent: Remove an item from an annotation queue
 - Langfuse operation: `annotationQueues_deleteQueueItem`
@@ -321,7 +321,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_get_queue`
+#### `langfuse_annotation_queues_get_queue`
 
 - Intent: Get an annotation queue by ID
 - Langfuse operation: `annotationQueues_getQueue`
@@ -335,7 +335,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_get_queue_item`
+#### `langfuse_annotation_queues_get_queue_item`
 
 - Intent: Get a specific item from an annotation queue
 - Langfuse operation: `annotationQueues_getQueueItem`
@@ -351,14 +351,14 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_list_queue_items`
+#### `langfuse_annotation_queues_list_queue_items`
 
 - Intent: Get items for a specific annotation queue
 - Langfuse operation: `annotationQueues_listQueueItems`
 - HTTP: `GET /api/public/annotation-queues/{queueId}/items`
 - Parameters:
 - `queueId`: required; source=`path`; schema=string. The unique identifier of the annotation queue
-- `status`: optional; source=`query`; schema=string | null, enum=["PENDING", "COMPLETED"]. Filter by status
+- `status`: optional; source=`query`; schema=string | null, enum=["PENDING", "COMPLETED", null]. Filter by status
 - `page`: optional; source=`query`; schema=integer | null. page number, starts at 1
 - `limit`: optional; source=`query`; schema=integer | null. limit of items per page
 - Usage example:
@@ -368,7 +368,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_annotation_queues_list_queues`
+#### `langfuse_annotation_queues_list_queues`
 
 - Intent: Get all annotation queues
 - Langfuse operation: `annotationQueues_listQueues`
@@ -381,7 +381,7 @@ Total tools: 87
 {}
 ```
 
-### `langfuse_annotation_queues_update_queue_item`
+#### `langfuse_annotation_queues_update_queue_item`
 
 - Intent: Update an annotation queue item
 - Langfuse operation: `annotationQueues_updateQueueItem`
@@ -399,9 +399,9 @@ Total tools: 87
 }
 ```
 
-## BlobStorageIntegrations
+### BlobStorageIntegrations
 
-### `langfuse_blob_storage_integrations_delete_blob_storage_integration`
+#### `langfuse_blob_storage_integrations_delete_blob_storage_integration`
 
 - Intent: Delete a blob storage integration by ID (requires organization-scoped API key)
 - Langfuse operation: `blobStorageIntegrations_deleteBlobStorageIntegration`
@@ -415,7 +415,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_blob_storage_integrations_get_blob_storage_integration_status`
+#### `langfuse_blob_storage_integrations_get_blob_storage_integration_status`
 
 - Intent: Get the sync status of a blob storage integration by integration ID (requires organization-scoped API key)
 - Langfuse operation: `blobStorageIntegrations_getBlobStorageIntegrationStatus`
@@ -429,7 +429,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_blob_storage_integrations_get_blob_storage_integrations`
+#### `langfuse_blob_storage_integrations_get_blob_storage_integrations`
 
 - Intent: Get all blob storage integrations for the organization (requires organization-scoped API key)
 - Langfuse operation: `blobStorageIntegrations_getBlobStorageIntegrations`
@@ -441,7 +441,7 @@ Total tools: 87
 {}
 ```
 
-### `langfuse_blob_storage_integrations_upsert_blob_storage_integration`
+#### `langfuse_blob_storage_integrations_upsert_blob_storage_integration`
 
 - Intent: Create or update a blob storage integration for a specific project (requires organization-scoped API key). The configuration is validated by performing a test upload to the bucket.
 - Langfuse operation: `blobStorageIntegrations_upsertBlobStorageIntegration`
@@ -465,9 +465,9 @@ Total tools: 87
 }
 ```
 
-## Comments
+### Comments
 
-### `langfuse_comments_create`
+#### `langfuse_comments_create`
 
 - Intent: Create a comment. Comments may be attached to different object types (trace, observation, session, prompt).
 - Langfuse operation: `comments_create`
@@ -486,7 +486,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_comments_get`
+#### `langfuse_comments_get`
 
 - Intent: Get all comments
 - Langfuse operation: `comments_get`
@@ -502,7 +502,7 @@ Total tools: 87
 {}
 ```
 
-### `langfuse_comments_get_by_id`
+#### `langfuse_comments_get_by_id`
 
 - Intent: Get a comment by id
 - Langfuse operation: `comments_get-by-id`
@@ -516,9 +516,9 @@ Total tools: 87
 }
 ```
 
-## DatasetItems
+### DatasetItems
 
-### `langfuse_dataset_items_create`
+#### `langfuse_dataset_items_create`
 
 - Intent: Create a dataset item
 - Langfuse operation: `datasetItems_create`
@@ -534,7 +534,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_dataset_items_delete`
+#### `langfuse_dataset_items_delete`
 
 - Intent: Delete a dataset item and all its run items. This action is irreversible.
 - Langfuse operation: `datasetItems_delete`
@@ -548,7 +548,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_dataset_items_get`
+#### `langfuse_dataset_items_get`
 
 - Intent: Get a dataset item
 - Langfuse operation: `datasetItems_get`
@@ -562,7 +562,7 @@ Total tools: 87
 }
 ```
 
-### `langfuse_dataset_items_list`
+#### `langfuse_dataset_items_list`
 
 - Intent: Get dataset items. Optionally specify a version to get the items as they existed at that point in time.
 Note: If version parameter is provided, datasetName must also be provided.
@@ -582,9 +582,9 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 {}
 ```
 
-## DatasetRunItems
+### DatasetRunItems
 
-### `langfuse_dataset_run_items_create`
+#### `langfuse_dataset_run_items_create`
 
 - Intent: Create a dataset run item
 - Langfuse operation: `datasetRunItems_create`
@@ -601,7 +601,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_dataset_run_items_list`
+#### `langfuse_dataset_run_items_list`
 
 - Intent: List dataset run items
 - Langfuse operation: `datasetRunItems_list`
@@ -619,9 +619,9 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-## Datasets
+### Datasets
 
-### `langfuse_datasets_create`
+#### `langfuse_datasets_create`
 
 - Intent: Create a dataset
 - Langfuse operation: `datasets_create`
@@ -637,7 +637,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_datasets_delete_run`
+#### `langfuse_datasets_delete_run`
 
 - Intent: Delete a dataset run and all its run items. This action is irreversible.
 - Langfuse operation: `datasets_deleteRun`
@@ -653,7 +653,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_datasets_get`
+#### `langfuse_datasets_get`
 
 - Intent: Get a dataset
 - Langfuse operation: `datasets_get`
@@ -667,7 +667,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_datasets_get_run`
+#### `langfuse_datasets_get_run`
 
 - Intent: Get a dataset run and its items
 - Langfuse operation: `datasets_getRun`
@@ -683,7 +683,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_datasets_get_runs`
+#### `langfuse_datasets_get_runs`
 
 - Intent: Get dataset runs
 - Langfuse operation: `datasets_getRuns`
@@ -699,7 +699,7 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 }
 ```
 
-### `langfuse_datasets_list`
+#### `langfuse_datasets_list`
 
 - Intent: Get all datasets
 - Langfuse operation: `datasets_list`
@@ -712,9 +712,9 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 {}
 ```
 
-## Health
+### Health
 
-### `langfuse_health_health`
+#### `langfuse_health_health`
 
 - Intent: Check health of API and database
 - Langfuse operation: `health_health`
@@ -726,9 +726,9 @@ If not provided, returns the latest version. Requires datasetName to be specifie
 {}
 ```
 
-## Ingestion
+### Ingestion
 
-### `langfuse_ingestion_batch`
+#### `langfuse_ingestion_batch`
 
 - Intent: **Legacy endpoint for batch ingestion for Langfuse Observability.**
 
@@ -760,9 +760,9 @@ Notes:
 }
 ```
 
-## LegacyMetricsV1
+### LegacyMetricsV1
 
-### `langfuse_legacy_metrics_v1_metrics`
+#### `langfuse_legacy_metrics_v1_metrics`
 
 - Intent: Get metrics from the Langfuse project using a query object.
 
@@ -820,9 +820,9 @@ For more details, see the [Metrics API documentation](https://langfuse.com/docs/
 }
 ```
 
-## LegacyObservationsV1
+### LegacyObservationsV1
 
-### `langfuse_legacy_observations_v1_get`
+#### `langfuse_legacy_observations_v1_get`
 
 - Intent: Get a observation
 - Langfuse operation: `legacy_observationsV1_get`
@@ -836,7 +836,7 @@ For more details, see the [Metrics API documentation](https://langfuse.com/docs/
 }
 ```
 
-### `langfuse_legacy_observations_v1_get_many`
+#### `langfuse_legacy_observations_v1_get_many`
 
 - Intent: Get a list of observations.
 
@@ -850,7 +850,7 @@ Consider using the [v2 observations endpoint](/api-reference#tag/observationsv2/
 - `userId`: optional; source=`query`; schema=string | null. No description provided.
 - `type`: optional; source=`query`; schema=string | null. No description provided.
 - `traceId`: optional; source=`query`; schema=string | null. No description provided.
-- `level`: optional; source=`query`; schema=string | null, enum=["DEBUG", "DEFAULT", "WARNING", "ERROR"]. Optional filter for observations with a specific level (e.g. "DEBUG", "DEFAULT", "WARNING", "ERROR").
+- `level`: optional; source=`query`; schema=string | null, enum=["DEBUG", "DEFAULT", "WARNING", "ERROR", null]. Optional filter for observations with a specific level (e.g. "DEBUG", "DEFAULT", "WARNING", "ERROR").
 - `parentObservationId`: optional; source=`query`; schema=string | null. No description provided.
 - `environment`: optional; source=`query`; schema=array, items=string | null. Optional filter for observations where the environment is one of the provided values.
 - `fromStartTime`: optional; source=`query`; schema=string | null, format=date-time. Retrieve only observations with a start_time on or after this datetime (ISO 8601).
@@ -954,9 +954,9 @@ Each filter condition has the following structure:
 {}
 ```
 
-## LegacyScoreV1
+### LegacyScoreV1
 
-### `langfuse_legacy_score_v1_create`
+#### `langfuse_legacy_score_v1_create`
 
 - Intent: Create a score (supports both trace and session scores)
 - Langfuse operation: `legacy_scoreV1_create`
@@ -973,7 +973,7 @@ Each filter condition has the following structure:
 }
 ```
 
-### `langfuse_legacy_score_v1_delete`
+#### `langfuse_legacy_score_v1_delete`
 
 - Intent: Delete a score (supports both trace and session scores)
 - Langfuse operation: `legacy_scoreV1_delete`
@@ -987,9 +987,9 @@ Each filter condition has the following structure:
 }
 ```
 
-## LlmConnections
+### LlmConnections
 
-### `langfuse_llm_connections_list`
+#### `langfuse_llm_connections_list`
 
 - Intent: Get all LLM connections in a project
 - Langfuse operation: `llmConnections_list`
@@ -1002,7 +1002,7 @@ Each filter condition has the following structure:
 {}
 ```
 
-### `langfuse_llm_connections_upsert`
+#### `langfuse_llm_connections_upsert`
 
 - Intent: Create or update an LLM connection. The connection is upserted on provider.
 - Langfuse operation: `llmConnections_upsert`
@@ -1020,9 +1020,9 @@ Each filter condition has the following structure:
 }
 ```
 
-## Media
+### Media
 
-### `langfuse_media_get`
+#### `langfuse_media_get`
 
 - Intent: Get a media record
 - Langfuse operation: `media_get`
@@ -1036,7 +1036,7 @@ Each filter condition has the following structure:
 }
 ```
 
-### `langfuse_media_get_upload_url`
+#### `langfuse_media_get_upload_url`
 
 - Intent: Get a presigned upload URL for a media record
 - Langfuse operation: `media_getUploadUrl`
@@ -1056,7 +1056,7 @@ Each filter condition has the following structure:
 }
 ```
 
-### `langfuse_media_patch`
+#### `langfuse_media_patch`
 
 - Intent: Patch a media record
 - Langfuse operation: `media_patch`
@@ -1075,9 +1075,9 @@ Each filter condition has the following structure:
 }
 ```
 
-## Metrics
+### Metrics
 
-### `langfuse_metrics_metrics`
+#### `langfuse_metrics_metrics`
 
 - Intent: Get metrics from the Langfuse project using a query object. V2 endpoint with optimized performance.
 
@@ -1239,9 +1239,9 @@ Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `wee
 }
 ```
 
-## Models
+### Models
 
-### `langfuse_models_create`
+#### `langfuse_models_create`
 
 - Intent: Create a model
 - Langfuse operation: `models_create`
@@ -1258,7 +1258,7 @@ Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `wee
 }
 ```
 
-### `langfuse_models_delete`
+#### `langfuse_models_delete`
 
 - Intent: Delete a model. Cannot delete models managed by Langfuse. You can create your own definition with the same modelName to override the definition though.
 - Langfuse operation: `models_delete`
@@ -1272,7 +1272,7 @@ Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `wee
 }
 ```
 
-### `langfuse_models_get`
+#### `langfuse_models_get`
 
 - Intent: Get a model
 - Langfuse operation: `models_get`
@@ -1286,7 +1286,7 @@ Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `wee
 }
 ```
 
-### `langfuse_models_list`
+#### `langfuse_models_list`
 
 - Intent: Get all models
 - Langfuse operation: `models_list`
@@ -1299,9 +1299,9 @@ Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `wee
 {}
 ```
 
-## Observations
+### Observations
 
-### `langfuse_observations_get_many`
+#### `langfuse_observations_get_many`
 
 - Intent: Get a list of observations with cursor-based pagination and flexible field selection.
 
@@ -1347,7 +1347,7 @@ Remove this parameter or set it to `false`.
 - `userId`: optional; source=`query`; schema=string | null. No description provided.
 - `type`: optional; source=`query`; schema=string | null. Filter by observation type (e.g., "GENERATION", "SPAN", "EVENT", "AGENT", "TOOL", "CHAIN", "RETRIEVER", "EVALUATOR", "EMBEDDING", "GUARDRAIL")
 - `traceId`: optional; source=`query`; schema=string | null. No description provided.
-- `level`: optional; source=`query`; schema=string | null, enum=["DEBUG", "DEFAULT", "WARNING", "ERROR"]. Optional filter for observations with a specific level (e.g. "DEBUG", "DEFAULT", "WARNING", "ERROR").
+- `level`: optional; source=`query`; schema=string | null, enum=["DEBUG", "DEFAULT", "WARNING", "ERROR", null]. Optional filter for observations with a specific level (e.g. "DEBUG", "DEFAULT", "WARNING", "ERROR").
 - `parentObservationId`: optional; source=`query`; schema=string | null. No description provided.
 - `environment`: optional; source=`query`; schema=array, items=string | null. Optional filter for observations where the environment is one of the provided values.
 - `fromStartTime`: optional; source=`query`; schema=string | null, format=date-time. Retrieve only observations with a start_time on or after this datetime (ISO 8601).
@@ -1452,9 +1452,9 @@ Each filter condition has the following structure:
 {}
 ```
 
-## Opentelemetry
+### Opentelemetry
 
-### `langfuse_opentelemetry_export_traces`
+#### `langfuse_opentelemetry_export_traces`
 
 - Intent: **OpenTelemetry Traces Ingestion Endpoint**
 
@@ -1487,9 +1487,9 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-## Organizations
+### Organizations
 
-### `langfuse_organizations_delete_organization_membership`
+#### `langfuse_organizations_delete_organization_membership`
 
 - Intent: Delete a membership from the organization associated with the API key (requires organization-scoped API key)
 - Langfuse operation: `organizations_deleteOrganizationMembership`
@@ -1505,7 +1505,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_organizations_delete_project_membership`
+#### `langfuse_organizations_delete_project_membership`
 
 - Intent: Delete a membership from a specific project (requires organization-scoped API key). The user must be a member of the organization.
 - Langfuse operation: `organizations_deleteProjectMembership`
@@ -1523,7 +1523,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_organizations_get_organization_api_keys`
+#### `langfuse_organizations_get_organization_api_keys`
 
 - Intent: Get all API keys for the organization associated with the API key (requires organization-scoped API key)
 - Langfuse operation: `organizations_getOrganizationApiKeys`
@@ -1535,7 +1535,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 {}
 ```
 
-### `langfuse_organizations_get_organization_memberships`
+#### `langfuse_organizations_get_organization_memberships`
 
 - Intent: Get all memberships for the organization associated with the API key (requires organization-scoped API key)
 - Langfuse operation: `organizations_getOrganizationMemberships`
@@ -1547,7 +1547,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 {}
 ```
 
-### `langfuse_organizations_get_organization_projects`
+#### `langfuse_organizations_get_organization_projects`
 
 - Intent: Get all projects for the organization associated with the API key (requires organization-scoped API key)
 - Langfuse operation: `organizations_getOrganizationProjects`
@@ -1559,7 +1559,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 {}
 ```
 
-### `langfuse_organizations_get_project_memberships`
+#### `langfuse_organizations_get_project_memberships`
 
 - Intent: Get all memberships for a specific project (requires organization-scoped API key)
 - Langfuse operation: `organizations_getProjectMemberships`
@@ -1573,7 +1573,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_organizations_update_organization_membership`
+#### `langfuse_organizations_update_organization_membership`
 
 - Intent: Create or update a membership for the organization associated with the API key (requires organization-scoped API key)
 - Langfuse operation: `organizations_updateOrganizationMembership`
@@ -1590,7 +1590,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_organizations_update_project_membership`
+#### `langfuse_organizations_update_project_membership`
 
 - Intent: Create or update a membership for a specific project (requires organization-scoped API key). The user must already be a member of the organization.
 - Langfuse operation: `organizations_updateProjectMembership`
@@ -1609,9 +1609,9 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-## Projects
+### Projects
 
-### `langfuse_projects_create`
+#### `langfuse_projects_create`
 
 - Intent: Create a new project (requires organization-scoped API key)
 - Langfuse operation: `projects_create`
@@ -1628,7 +1628,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_projects_create_api_key`
+#### `langfuse_projects_create_api_key`
 
 - Intent: Create a new API key for a project (requires organization-scoped API key)
 - Langfuse operation: `projects_createApiKey`
@@ -1644,7 +1644,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_projects_delete`
+#### `langfuse_projects_delete`
 
 - Intent: Delete a project by ID (requires organization-scoped API key). Project deletion is processed asynchronously.
 - Langfuse operation: `projects_delete`
@@ -1658,7 +1658,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_projects_delete_api_key`
+#### `langfuse_projects_delete_api_key`
 
 - Intent: Delete an API key for a project (requires organization-scoped API key)
 - Langfuse operation: `projects_deleteApiKey`
@@ -1674,7 +1674,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_projects_get`
+#### `langfuse_projects_get`
 
 - Intent: Get Project associated with API key (requires project-scoped API key). You can use GET /api/public/organizations/projects to get all projects with an organization-scoped key.
 - Langfuse operation: `projects_get`
@@ -1686,7 +1686,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 {}
 ```
 
-### `langfuse_projects_get_api_keys`
+#### `langfuse_projects_get_api_keys`
 
 - Intent: Get all API keys for a project (requires organization-scoped API key)
 - Langfuse operation: `projects_getApiKeys`
@@ -1700,7 +1700,7 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-### `langfuse_projects_update`
+#### `langfuse_projects_update`
 
 - Intent: Update a project by ID (requires organization-scoped API key).
 - Langfuse operation: `projects_update`
@@ -1718,9 +1718,9 @@ This endpoint implements the OTLP/HTTP specification for trace ingestion, provid
 }
 ```
 
-## PromptVersion
+### PromptVersion
 
-### `langfuse_prompt_version_update`
+#### `langfuse_prompt_version_update`
 
 - Intent: Update labels for a specific prompt version
 - Langfuse operation: `promptVersion_update`
@@ -1743,9 +1743,9 @@ the folder path must be URL encoded.
 }
 ```
 
-## Prompts
+### Prompts
 
-### `langfuse_prompts_create`
+#### `langfuse_prompts_create`
 
 - Intent: Create a new version for the prompt with the given `name`
 - Langfuse operation: `prompts_create`
@@ -1763,7 +1763,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_prompts_delete`
+#### `langfuse_prompts_delete`
 
 - Intent: Delete prompt versions. If neither version nor label is specified, all versions of the prompt are deleted.
 - Langfuse operation: `prompts_delete`
@@ -1779,7 +1779,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_prompts_get`
+#### `langfuse_prompts_get`
 
 - Intent: Get a prompt
 - Langfuse operation: `prompts_get`
@@ -1797,7 +1797,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_prompts_list`
+#### `langfuse_prompts_list`
 
 - Intent: Get a list of prompt names with versions and labels
 - Langfuse operation: `prompts_list`
@@ -1815,9 +1815,9 @@ the folder path must be URL encoded.
 {}
 ```
 
-## Scim
+### Scim
 
-### `langfuse_scim_create_user`
+#### `langfuse_scim_create_user`
 
 - Intent: Create a new user in the organization (requires organization-scoped API key)
 - Langfuse operation: `scim_createUser`
@@ -1834,7 +1834,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_scim_delete_user`
+#### `langfuse_scim_delete_user`
 
 - Intent: Remove a user from the organization (requires organization-scoped API key). Note that this only removes the user from the organization but does not delete the user entity itself.
 - Langfuse operation: `scim_deleteUser`
@@ -1848,7 +1848,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_scim_get_resource_types`
+#### `langfuse_scim_get_resource_types`
 
 - Intent: Get SCIM Resource Types (requires organization-scoped API key)
 - Langfuse operation: `scim_getResourceTypes`
@@ -1860,7 +1860,7 @@ the folder path must be URL encoded.
 {}
 ```
 
-### `langfuse_scim_get_schemas`
+#### `langfuse_scim_get_schemas`
 
 - Intent: Get SCIM Schemas (requires organization-scoped API key)
 - Langfuse operation: `scim_getSchemas`
@@ -1872,7 +1872,7 @@ the folder path must be URL encoded.
 {}
 ```
 
-### `langfuse_scim_get_service_provider_config`
+#### `langfuse_scim_get_service_provider_config`
 
 - Intent: Get SCIM Service Provider Configuration (requires organization-scoped API key)
 - Langfuse operation: `scim_getServiceProviderConfig`
@@ -1884,7 +1884,7 @@ the folder path must be URL encoded.
 {}
 ```
 
-### `langfuse_scim_get_user`
+#### `langfuse_scim_get_user`
 
 - Intent: Get a specific user by ID (requires organization-scoped API key)
 - Langfuse operation: `scim_getUser`
@@ -1898,7 +1898,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_scim_list_users`
+#### `langfuse_scim_list_users`
 
 - Intent: List users in the organization (requires organization-scoped API key)
 - Langfuse operation: `scim_listUsers`
@@ -1912,9 +1912,9 @@ the folder path must be URL encoded.
 {}
 ```
 
-## ScoreConfigs
+### ScoreConfigs
 
-### `langfuse_score_configs_create`
+#### `langfuse_score_configs_create`
 
 - Intent: Create a score configuration (config). Score configs are used to define the structure of scores
 - Langfuse operation: `scoreConfigs_create`
@@ -1931,7 +1931,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_score_configs_get`
+#### `langfuse_score_configs_get`
 
 - Intent: Get all score configs
 - Langfuse operation: `scoreConfigs_get`
@@ -1944,7 +1944,7 @@ the folder path must be URL encoded.
 {}
 ```
 
-### `langfuse_score_configs_get_by_id`
+#### `langfuse_score_configs_get_by_id`
 
 - Intent: Get a score config
 - Langfuse operation: `scoreConfigs_get-by-id`
@@ -1958,7 +1958,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_score_configs_update`
+#### `langfuse_score_configs_update`
 
 - Intent: Update a score config
 - Langfuse operation: `scoreConfigs_update`
@@ -1974,9 +1974,9 @@ the folder path must be URL encoded.
 }
 ```
 
-## Scores
+### Scores
 
-### `langfuse_scores_get_by_id`
+#### `langfuse_scores_get_by_id`
 
 - Intent: Get a score (supports both trace and session scores)
 - Langfuse operation: `scores_get-by-id`
@@ -1990,7 +1990,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_scores_get_many`
+#### `langfuse_scores_get_many`
 
 - Intent: Get a list of scores (supports both trace and session scores)
 - Langfuse operation: `scores_get-many`
@@ -2003,7 +2003,7 @@ the folder path must be URL encoded.
 - `fromTimestamp`: optional; source=`query`; schema=string | null, format=date-time. Optional filter to only include scores created on or after a certain datetime (ISO 8601)
 - `toTimestamp`: optional; source=`query`; schema=string | null, format=date-time. Optional filter to only include scores created before a certain datetime (ISO 8601)
 - `environment`: optional; source=`query`; schema=array, items=string | null. Optional filter for scores where the environment is one of the provided values.
-- `source`: optional; source=`query`; schema=string | null, enum=["ANNOTATION", "API", "EVAL"]. Retrieve only scores from a specific source.
+- `source`: optional; source=`query`; schema=string | null, enum=["ANNOTATION", "API", "EVAL", null]. Retrieve only scores from a specific source.
 - `operator`: optional; source=`query`; schema=string | null. Retrieve only scores with <operator> value.
 - `value`: optional; source=`query`; schema=number | null, format=double. Retrieve only scores with <operator> value.
 - `scoreIds`: optional; source=`query`; schema=string | null. Comma-separated list of score IDs to limit the results to.
@@ -2013,7 +2013,7 @@ the folder path must be URL encoded.
 - `traceId`: optional; source=`query`; schema=string | null. Retrieve only scores with a specific traceId.
 - `observationId`: optional; source=`query`; schema=string | null. Comma-separated list of observation IDs to filter scores by.
 - `queueId`: optional; source=`query`; schema=string | null. Retrieve only scores with a specific annotation queueId.
-- `dataType`: optional; source=`query`; schema=string | null, enum=["NUMERIC", "BOOLEAN", "CATEGORICAL", "CORRECTION", "TEXT"]. Retrieve only scores with a specific dataType.
+- `dataType`: optional; source=`query`; schema=string | null, enum=["NUMERIC", "BOOLEAN", "CATEGORICAL", "CORRECTION", "TEXT", ...]. Retrieve only scores with a specific dataType.
 - `traceTags`: optional; source=`query`; schema=array, items=string | null. Only scores linked to traces that include all of these tags will be returned.
 - `fields`: optional; source=`query`; schema=string | null. Comma-separated list of field groups to include in the response. Available field groups: 'score' (core score fields), 'trace' (trace properties: userId, tags, environment, sessionId). If not specified, both 'score' and 'trace' are returned by default. Example: 'score' to exclude trace data, 'score,trace' to include both. Note: When filtering by trace properties (using userId or traceTags parameters), the 'trace' field group must be included, otherwise a 400 error will be returned.
 - `filter`: optional; source=`query`; schema=string | null. A JSON stringified array of filter objects. Each object requires type, column, operator, and value. Supports filtering by score metadata using the stringObject type. Example: [{"type":"stringObject","column":"metadata","key":"user_id","operator":"=","value":"abc123"}]. Supported types: stringObject (metadata key-value filtering), string, number, datetime, stringOptions, arrayOptions. Supported operators for stringObject: =, contains, does not contain, starts with, ends with.
@@ -2022,9 +2022,9 @@ the folder path must be URL encoded.
 {}
 ```
 
-## Sessions
+### Sessions
 
-### `langfuse_sessions_get`
+#### `langfuse_sessions_get`
 
 - Intent: Get a session. Please note that `traces` on this endpoint are not paginated, if you plan to fetch large sessions, consider `GET /api/public/traces?sessionId=<sessionId>`
 - Langfuse operation: `sessions_get`
@@ -2038,7 +2038,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_sessions_list`
+#### `langfuse_sessions_list`
 
 - Intent: Get sessions
 - Langfuse operation: `sessions_list`
@@ -2054,9 +2054,9 @@ the folder path must be URL encoded.
 {}
 ```
 
-## Trace
+### Trace
 
-### `langfuse_trace_delete`
+#### `langfuse_trace_delete`
 
 - Intent: Delete a specific trace
 - Langfuse operation: `trace_delete`
@@ -2070,7 +2070,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_trace_delete_multiple`
+#### `langfuse_trace_delete_multiple`
 
 - Intent: Delete multiple traces
 - Langfuse operation: `trace_deleteMultiple`
@@ -2088,7 +2088,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_trace_get`
+#### `langfuse_trace_get`
 
 - Intent: Get a specific trace
 - Langfuse operation: `trace_get`
@@ -2103,7 +2103,7 @@ the folder path must be URL encoded.
 }
 ```
 
-### `langfuse_trace_list`
+#### `langfuse_trace_list`
 
 - Intent: Get list of traces
 - Langfuse operation: `trace_list`
