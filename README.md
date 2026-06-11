@@ -40,13 +40,15 @@ set to the repository root. If your client passes `env` directly, `cwd` is optio
 | `LANGFUSE_BASE_URL` | `https://cloud.langfuse.com` | Base URL for the Langfuse API |
 | `LANGFUSE_TIMEOUT_SECONDS` | `30` | Request timeout for outbound API calls |
 | `LANGFUSE_VERIFY_SSL` | `true` | Enable or disable TLS certificate verification |
+| `LANGFUSE_RETRY_ATTEMPTS` | `2` | Retries for `GET` requests only, on HTTP 429/503. Honors an integer `Retry-After` header; otherwise uses exponential backoff capped at 10s |
+| `LANGFUSE_MAX_RESPONSE_BYTES` | `200000` | Responses whose data exceeds this byte length are replaced by `{"truncated": true, "data_bytes": N, "preview": "..."}` |
 | `LANGFUSE_TOOL_PROFILES` | `minimal` | Comma-separated profile list used to seed the visible tool set |
 | `LANGFUSE_TOOL_FAMILIES_ENABLE` | unset | Additional Langfuse API families to expose |
 | `LANGFUSE_TOOL_FAMILIES_DISABLE` | unset | Langfuse API families to hide |
 | `LANGFUSE_TOOLS_ENABLE` | unset | Individual MCP tools to force-enable |
 | `LANGFUSE_TOOLS_DISABLE` | unset | Individual MCP tools to force-disable |
-| `LANGFUSE_ENABLE_WRITE_TOOLS` | `false` | Allow non-`GET` operations except where tighter gates still apply |
-| `LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS` | `false` | Allow `DELETE` operations |
+| `LANGFUSE_ENABLE_WRITE_TOOLS` | `false` | Allow non-`GET`, non-`DELETE` operations |
+| `LANGFUSE_ENABLE_DESTRUCTIVE_TOOLS` | `false` | Allow `DELETE` operations (sufficient on its own; does not require the write flag) |
 | `LANGFUSE_ENABLE_ADMIN_TOOLS` | `false` | Allow admin-family tools |
 | `LANGFUSE_ENABLE_LEGACY_TOOLS` | `false` | Allow legacy API families |
 
@@ -68,6 +70,13 @@ Notes:
 - `LANGFUSE_TOOLS_DISABLE` always hides that tool.
 - If a client attempts to call a hidden but known tool directly, the server returns a
   `tool_not_enabled` error.
+- `LANGFUSE_TOOL_PROFILES=""` (set but empty) selects **no** profiles. This pairs with
+  `LANGFUSE_TOOLS_ENABLE` to build allowlist-only configurations; the server logs a startup
+  warning when zero tools are enabled.
+- HTTP redirects are treated as configuration errors: the client does not follow them. Fix
+  `LANGFUSE_BASE_URL` instead.
+- Python 3.14 is a deliberate floor. The project targets a standardized toolchain with a
+  lockfile resolved against 3.14; older interpreters are untested and unsupported.
 
 ### Profiles
 

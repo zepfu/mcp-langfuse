@@ -7,11 +7,15 @@ name = "mcp-langfuse"
 dynamic = ["version"]
 description = "MCP server exposing the Langfuse public API"
 readme = "README.md"
+classifiers = ["Private :: Do Not Upload"]
+# Python 3.14-only floor is deliberate: this project targets a standardized
+# toolchain, the lockfile is resolved against 3.14, and older interpreters are
+# untested and unsupported.
 requires-python = ">=3.14"
 dependencies = [
   "httpx>=0.28.1",
   "jsonschema>=4.25.1",
-  "mcp[cli]>=1.18.0",
+  "mcp[cli]>=1.19.0,<2",
   "pydantic>=2.11.0",
   "pydantic-settings>=2.10.0",
   "PyYAML>=6.0.2",
@@ -77,13 +81,6 @@ ignore = ["ANN401", "COM812", "D203", "D213", "ISC001"]
 paths = ["src/mcp_langfuse"]
 min_confidence = 80
 ignore_decorators = [
-  "@pytest.fixture",
-  "@pytest.hookimpl",
-  "@pytest_testable.*",
-  "@click.command",
-  "@click.group",
-  "@click.option",
-  "@click.argument",
   "@server.list_tools",
   "@server.call_tool",
 ]
@@ -93,3 +90,8 @@ ignore_names = [
   "_pytest_*",
   "cls",
 ]
+
+[tool.aawm.gate]
+coverage_target = 80
+default_branch = "develop"
+release_branch = "main"

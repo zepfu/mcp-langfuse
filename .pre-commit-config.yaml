@@ -15,22 +15,12 @@ repos:
         args: ["--fix"]
       - id: ruff-format
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.18.2
+  - repo: local
     hooks:
       - id: mypy
-        additional_dependencies:
-          - httpx>=0.28.1
-          - jsonschema>=4.25.1
-          - mcp[cli]>=1.18.0
-          - pydantic>=2.11.0
-          - pydantic-settings>=2.10.0
-          - PyYAML>=6.0.2
-          - pytest>=8.3.5
-          - respx>=0.22.0
-          - types-jsonschema
-          - types-PyYAML>=6.0.12.20250915
-        args: ["--config-file=pyproject.toml"]
+        name: mypy (locked env)
+        entry: uv run --no-sync mypy --config-file=pyproject.toml
+        language: system
         pass_filenames: false
 
   - repo: https://github.com/jendrikseipp/vulture
@@ -54,6 +44,6 @@ repos:
     hooks:
       - id: tools-md-check
         name: Check TOOLS.md is up to date
-        entry: /bin/bash -lc 'PYTHONPATH=src .venv/bin/python -m mcp_langfuse.tools_markdown --check'
+        entry: uv run --no-sync python -m mcp_langfuse.tools_markdown --check
         language: system
         pass_filenames: false

@@ -51,5 +51,4 @@ mcp-pg.yaml
 .gemini/
 .codex/
 .agent/
-.analysis/
 .claude/
