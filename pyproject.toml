@@ -1,0 +1,98 @@
+[build-system]
+requires = ["setuptools>=80.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-langfuse"
+dynamic = ["version"]
+description = "MCP server exposing the Langfuse public API"
+readme = "README.md"
+classifiers = ["Private :: Do Not Upload"]
+# Python 3.14-only floor is deliberate: this project targets a standardized
+# toolchain, the lockfile is resolved against 3.14, and older interpreters are
+# untested and unsupported.
+requires-python = ">=3.14"
+dependencies = [
+  "httpx>=0.28.1",
+  "jsonschema>=4.25.1",
+  "mcp[cli]>=1.19.0,<2",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.10.0",
+  "PyYAML>=6.0.2",
+]
+
+[project.scripts]
+mcp-langfuse = "mcp_langfuse.server:main"
+mcp-langfuse-generate-tools-md = "mcp_langfuse.tools_markdown:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17.1",
+  "pre-commit>=4.3.0",
+  "pytest>=8.3.5",
+  "pytest-asyncio>=1.0.0",
+  "respx>=0.22.0",
+  "ruff>=0.11.5",
+  "types-jsonschema",
+  "types-PyYAML>=6.0.12.20250915",
+  "vulture>=2.14",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "mcp_langfuse.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mcp_langfuse = ["specs/*.yml"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.mypy]
+files = ["src", "tests"]
+mypy_path = ["src"]
+python_version = "3.14"
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+disable_error_code = ["attr-defined", "var-annotated", "arg-type"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["ANN401", "COM812", "D203", "D213", "ISC001"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D103", "ANN", "ARG001", "D100", "EM", "PLC0415", "PLR2004", "S", "SLF001", "TRY003"]
+
+[tool.vulture]
+paths = ["src/mcp_langfuse"]
+min_confidence = 80
+ignore_decorators = [
+  "@server.list_tools",
+  "@server.call_tool",
+]
+ignore_names = [
+  "pytest_*",
+  "test_*",
+  "_pytest_*",
+  "cls",
+]
+
+[tool.aawm.gate]
+coverage_target = 80
+default_branch = "develop"
+release_branch = "main"
+uv_extras = []

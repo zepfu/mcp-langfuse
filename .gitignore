@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 *.egg-info/
 *.egg
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 dist/
 build/
 .eggs/
@@ -48,5 +51,4 @@ mcp-pg.yaml
 .gemini/
 .codex/
 .agent/
-.analysis/
 .claude/
