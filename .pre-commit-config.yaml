@@ -35,7 +35,10 @@ repos:
         pass_filenames: false
       - id: postcommit
         name: shared post-commit evidence
-        entry: uv run --frozen pytest --rootdir . -o addopts= postcommit
+        entry: >-
+          sh -c 'uv run --frozen pytest --rootdir . -o addopts= -p no:testable
+          --classifier-postcommit &&
+          uv run --frozen pytest --rootdir . -o addopts= -p no:classifier postcommit'
         language: system
         pass_filenames: false
         always_run: true
