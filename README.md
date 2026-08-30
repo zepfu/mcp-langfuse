@@ -153,9 +153,10 @@ python3.14 -m uv run mcp-langfuse
 
 ## Development
 
-`pytest-classifier` and `pytest-testable` are development-only tools and are intentionally excluded from runtime and wheel dependencies. Bootstrap the development environment with
-`uv sync --dev`. Normal `pytest` runs enable classifier ordinary-test error-mode behavior with
-`use_testable = false` and do not enable `--testable`.
+`pytest-classifier` and `pytest-testable` are development-only and are excluded from runtime and wheel dependencies; clean production and wheel installs exclude both packages. Bootstrap the
+development environment with `uv sync --dev`. Normal `pytest` runs neither `--classify` nor
+`--testable`. Classifier error-mode enforcement runs explicitly in the staged pre-commit hook via
+`pytest precommit --classify`.
 
 Install the repository-managed `pre-commit`, `post-commit`, and `post-merge` hooks with:
 
@@ -170,8 +171,8 @@ python3.14 -m uv run vulture
 python3.14 -m uv run pre-commit run --all-files
 ```
 
-Generated `.pytest-classifier/` and `.testable-artifacts/` state remains ignored and local. The
-shared postcommit hook drains pending evidence after a commit or merge.
+Generated `.pytest-classifier/` and `.testable-artifacts/` state remains ignored and local.
+Post-commit and post-merge hooks use the shared postcommit evidence lifecycle.
 
 ## Tool Reference
 
