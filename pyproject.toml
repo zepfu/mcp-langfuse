@@ -55,7 +55,6 @@ mcp_langfuse = ["specs/*.yml"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-addopts = "--classify"
 
 [tool.mypy]
 files = ["src", "tests"]
