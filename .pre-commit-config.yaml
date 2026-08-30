@@ -24,7 +24,7 @@ repos:
     hooks:
       - id: precommit
         name: pre-commit pytest evidence
-        entry: env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE uv run --frozen pytest precommit
+        entry: env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE uv run --frozen pytest precommit --classify
         language: system
         pass_filenames: false
         stages: [pre-commit]

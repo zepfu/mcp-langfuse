@@ -56,8 +56,9 @@ def test_dependency_groups_and_uv_sources_contracts() -> None:
 def test_pytest_and_classifier_tooling_contracts() -> None:
     data = _load_toml()
     pytest_opts = data["tool"]["pytest"]["ini_options"]
-    assert pytest_opts["addopts"] == "--classify"
-    assert "--testable" not in pytest_opts["addopts"]
+    normal_addopts = pytest_opts.get("addopts", "")
+    assert "--classify" not in normal_addopts
+    assert "--testable" not in normal_addopts
 
     classifier = data["tool"]["pytest-classifier"]
     assert classifier["src_root"] == "src/mcp_langfuse"
@@ -82,9 +83,12 @@ def test_pre_commit_hooks_contracts() -> None:
             local_hooks[hook["id"]] = hook
 
     precommit = local_hooks["precommit"]
-    assert precommit["entry"] == (
-        "env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE uv run --frozen pytest precommit"
+    expected_precommit = (
+        "env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE uv run --frozen pytest "
+        "precommit --classify"
     )
+    assert precommit["entry"] == expected_precommit
+    assert "precommit --classify" in precommit["entry"]
     assert precommit["stages"] == ["pre-commit"]
     assert precommit["pass_filenames"] is False
 
