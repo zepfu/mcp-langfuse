@@ -93,7 +93,12 @@ def test_pre_commit_hooks_contracts() -> None:
     assert precommit["pass_filenames"] is False
 
     postcommit = local_hooks["postcommit"]
-    assert postcommit["entry"] == "uv run --frozen pytest --rootdir . -o addopts= postcommit"
+    expected_postcommit = (
+        "sh -c 'uv run --frozen pytest --rootdir . -o addopts= -p no:testable "
+        "--classifier-postcommit && "
+        "uv run --frozen pytest --rootdir . -o addopts= -p no:classifier postcommit'"
+    )
+    assert postcommit["entry"] == expected_postcommit
     assert postcommit["pass_filenames"] is False
     assert postcommit["always_run"] is True
     assert postcommit["stages"] == ["post-commit", "post-merge"]
