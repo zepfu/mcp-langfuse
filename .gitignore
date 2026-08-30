@@ -11,6 +11,8 @@ dist/
 build/
 .eggs/
 *.whl
+.pytest-classifier/
+.testable-artifacts/
 
 # Virtual environments
 .venv/

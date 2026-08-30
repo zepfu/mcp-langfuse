@@ -28,6 +28,8 @@ mcp-langfuse-generate-tools-md = "mcp_langfuse.tools_markdown:main"
 [dependency-groups]
 dev = [
   "mypy>=1.17.1",
+  "pytest-classifier",
+  "pytest-testable",
   "pre-commit>=4.3.0",
   "pytest>=8.3.5",
   "pytest-asyncio>=1.0.0",
@@ -53,6 +55,7 @@ mcp_langfuse = ["specs/*.yml"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+addopts = "--classify"
 
 [tool.mypy]
 files = ["src", "tests"]
@@ -96,3 +99,13 @@ coverage_target = 80
 default_branch = "develop"
 release_branch = "main"
 uv_extras = []
+
+[tool.uv.sources]
+pytest-classifier = { git = "https://github.com/zepfu/pytest-classifier.git", rev = "55095644184147600c2ddd23237c952a27928054" }
+pytest-testable = { git = "https://github.com/zepfu/pytest-testable.git", rev = "6858b18544c0a6a3c7d8823382aeda8cd6092ce8" }
+
+[tool.pytest-classifier]
+src_root = "src/mcp_langfuse"
+tests_root = "tests"
+mode = "error"
+use_testable = false
