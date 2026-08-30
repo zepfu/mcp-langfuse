@@ -36,9 +36,9 @@ repos:
       - id: postcommit
         name: shared post-commit evidence
         entry: >-
-          sh -c 'uv run --frozen pytest --rootdir . -o addopts= -p no:testable
-          --classifier-postcommit &&
-          uv run --frozen pytest --rootdir . -o addopts= -p no:classifier postcommit'
+          sh -c 'uv run --frozen pytest-classifier merge-pending-evidence
+          --repo-root . --commit HEAD &&
+          uv run --frozen pytest-testable postcommit --repo-root . --commit HEAD'
         language: system
         pass_filenames: false
         always_run: true
