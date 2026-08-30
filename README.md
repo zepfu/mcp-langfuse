@@ -153,15 +153,25 @@ python3.14 -m uv run mcp-langfuse
 
 ## Development
 
+`pytest-classifier` and `pytest-testable` are development-only tools and are intentionally excluded from runtime and wheel dependencies. Bootstrap the development environment with
+`uv sync --dev`. Normal `pytest` runs enable classifier ordinary-test error-mode behavior with
+`use_testable = false` and do not enable `--testable`.
+
+Install the repository-managed `pre-commit`, `post-commit`, and `post-merge` hooks with:
+
 ```bash
-python3.14 -m uv sync
+uv sync --dev
+uv run pre-commit install --install-hooks --hook-type pre-commit \
+  --hook-type post-commit --hook-type post-merge
 python3.14 -m uv run pytest
 python3.14 -m uv run ruff check .
 python3.14 -m uv run mypy
 python3.14 -m uv run vulture
-python3.14 -m uv run pre-commit install
 python3.14 -m uv run pre-commit run --all-files
 ```
+
+Generated `.pytest-classifier/` and `.testable-artifacts/` state remains ignored and local. The
+shared postcommit hook drains pending evidence after a commit or merge.
 
 ## Tool Reference
 
