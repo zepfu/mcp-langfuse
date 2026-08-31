@@ -44,7 +44,7 @@ def test_dependency_groups_and_uv_sources_contracts() -> None:
     classifier_source = sources["pytest-classifier"]
     testable_source = sources["pytest-testable"]
     assert classifier_source["git"] == "https://github.com/zepfu/pytest-classifier.git"
-    assert classifier_source["rev"] == "55095644184147600c2ddd23237c952a27928054"
+    assert classifier_source["rev"] == "700c4a69ac2c4478c4ff1f573f81ac2fc4e3a71b"
     assert testable_source["git"] == "https://github.com/zepfu/pytest-testable.git"
     assert testable_source["rev"] == "6858b18544c0a6a3c7d8823382aeda8cd6092ce8"
     assert "editable" not in classifier_source
