@@ -405,7 +405,7 @@ dev = [
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-asyncio", specifier = ">=1.0.0" },
     { name = "pytest-classifier", git = "https://github.com/zepfu/pytest-classifier.git?rev=700c4a69ac2c4478c4ff1f573f81ac2fc4e3a71b" },
-    { name = "pytest-testable", git = "https://github.com/zepfu/pytest-testable.git?rev=6858b18544c0a6a3c7d8823382aeda8cd6092ce8" },
+    { name = "pytest-testable", git = "https://github.com/zepfu/pytest-testable.git?rev=0742f4d325c8e5dc645efcfca3c467f78d106adc" },
     { name = "respx", specifier = ">=0.22.0" },
     { name = "ruff", specifier = ">=0.11.5" },
     { name = "types-jsonschema" },
@@ -659,8 +659,8 @@ dependencies = [
 
 [[package]]
 name = "pytest-testable"
-version = "0.2.5"
-source = { git = "https://github.com/zepfu/pytest-testable.git?rev=6858b18544c0a6a3c7d8823382aeda8cd6092ce8#6858b18544c0a6a3c7d8823382aeda8cd6092ce8" }
+version = "0.2.6"
+source = { git = "https://github.com/zepfu/pytest-testable.git?rev=0742f4d325c8e5dc645efcfca3c467f78d106adc#0742f4d325c8e5dc645efcfca3c467f78d106adc" }
 
 [[package]]
 name = "python-discovery"

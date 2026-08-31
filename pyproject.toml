@@ -101,7 +101,7 @@ uv_extras = []
 
 [tool.uv.sources]
 pytest-classifier = { git = "https://github.com/zepfu/pytest-classifier.git", rev = "700c4a69ac2c4478c4ff1f573f81ac2fc4e3a71b" }
-pytest-testable = { git = "https://github.com/zepfu/pytest-testable.git", rev = "6858b18544c0a6a3c7d8823382aeda8cd6092ce8" }
+pytest-testable = { git = "https://github.com/zepfu/pytest-testable.git", rev = "0742f4d325c8e5dc645efcfca3c467f78d106adc" }
 
 [tool.pytest-classifier]
 src_root = "src/mcp_langfuse"
